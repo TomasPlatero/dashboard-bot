@@ -4,7 +4,8 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    port: process.env.PORT || 8080, // Usa el puerto de Railway o 8080 como fallback
-    host: "0.0.0.0" // Permite conexiones externas
+    port: process.env.PORT || 4173, // Usa el puerto dinámico de Railway
+    host: "0.0.0.0", // Permitir conexiones externas
+    allowedHosts: ["asistente.artictempest.es", "dashboard-bot-production.up.railway.app"] // Agrega los dominios permitidos
   }
 })
