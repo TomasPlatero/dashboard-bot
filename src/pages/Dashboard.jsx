@@ -1,38 +1,67 @@
-import { Container, Typography, Paper, Grid2 } from '@mui/material';
+/** @jsxImportSource @emotion/react */
+import { styled } from "@mui/material/styles";
+import Sidebar from "../components/Sidebar";
+import { Box, Toolbar, Typography, Paper, CircularProgress } from "@mui/material";
+import useAuthRedirect from "../hooks/useAuthRedirect";
+import { useContext } from "react";
+import { AuthContext } from "../context/AuthContext";
+
+// 🔹 Estiliza el contenedor principal con el tema
+const DashboardContainer = styled(Box)(({ theme }) => ({
+  display: "flex",
+  backgroundColor: theme.palette.background.default,
+  minHeight: "100vh",
+}));
+
+// 🔹 Estiliza el área principal del contenido
+const Content = styled(Box)(({ theme }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+}));
+
+// 🔹 Estiliza la tarjeta del Dashboard
+const DashboardCard = styled(Paper)(({ theme }) => ({
+  width: "80%",
+  padding: theme.spacing(4),
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[3],
+  textAlign: "center",
+}));
 
 const Dashboard = () => {
+  useAuthRedirect(); // 🔹 Maneja autenticación y redirección automáticamente
+  const { user, loading } = useContext(AuthContext);
+
+  if (loading) {
+    return (
+      <DashboardContainer>
+        <Sidebar />
+        <Content>
+          <CircularProgress />
+        </Content>
+      </DashboardContainer>
+    );
+  }
+
   return (
-    <Container maxWidth="lg">
-      <Typography variant="h3" gutterBottom>
-        Dashboard
-      </Typography>
-
-      <Grid2 container spacing={3}>
-        {/* Tarjeta 1 */}
-        <Grid item xs={12} md={6} lg={4}>
-          <Paper elevation={3} sx={{ padding: 3, textAlign: 'center' }}>
-            <Typography variant="h6">Resumen</Typography>
-            <Typography variant="body1">Aquí irá el contenido del resumen.</Typography>
-          </Paper>
-        </Grid>
-
-        {/* Tarjeta 2 */}
-        <Grid2 item xs={12} md={6} lg={4}>
-          <Paper elevation={3} sx={{ padding: 3, textAlign: 'center' }}>
-            <Typography variant="h6">Estadísticas</Typography>
-            <Typography variant="body1">Datos estadísticos aquí.</Typography>
-          </Paper>
-        </Grid2>
-
-        {/* Tarjeta 3 */}
-        <Grid2 item xs={12} md={6} lg={4}>
-          <Paper elevation={3} sx={{ padding: 3, textAlign: 'center' }}>
-            <Typography variant="h6">Configuraciones</Typography>
-            <Typography variant="body1">Acceso a configuraciones.</Typography>
-          </Paper>
-        </Grid2>
-      </Grid2>
-    </Container>
+    <DashboardContainer>
+      <Sidebar />
+      <Content>
+        <Toolbar />
+        <DashboardCard>
+          <Typography variant="h3" color="primary" gutterBottom>
+            Bienvenido al Dashboard, {user?.username}
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            Aquí puedes gestionar tus datos y ver estadísticas.
+          </Typography>
+        </DashboardCard>
+      </Content>
+    </DashboardContainer>
   );
 };
 
