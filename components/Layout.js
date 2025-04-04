@@ -1,13 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 import Sidebar from './Sidebar'
 import Dashboard from './Dashboard'
 import UserSettings from './UserSettings'
 import RankMapping from './RankMapping'
 
 export default function Layout() {
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient()
   const [session, setSession] = useState(null)
   const [view, setView] = useState('dashboard')
   const [serverMessage, setServerMessage] = useState('')
@@ -39,10 +39,10 @@ export default function Layout() {
   }
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div className="flex min-h-screen bg-gray-100">
       <Sidebar setView={setView} />
-      <main style={{ flexGrow: 1, padding: 30 }}>
-        <h3>{serverMessage}</h3>
+      <main className="flex-grow p-10">
+        <h3 className="text-sm text-gray-500 mb-4">{serverMessage}</h3>
         {views[view]}
       </main>
     </div>
