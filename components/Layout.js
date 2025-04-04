@@ -7,8 +7,10 @@ import UserSettings from './UserSettings'
 import RankMapping from './RankMapping'
 
 export default function Layout() {
-  const supabase = createBrowserClient()
-  const [session, setSession] = useState(null)
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  )  const [session, setSession] = useState(null)
   const [view, setView] = useState('dashboard')
   const [serverMessage, setServerMessage] = useState('')
 
