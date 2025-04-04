@@ -1,16 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { createBrowserClient } from '@supabase/ssr'
 import Sidebar from './Sidebar'
 import Dashboard from './Dashboard'
 import UserSettings from './UserSettings'
 import RankMapping from './RankMapping'
+import GuildSettings from './GuildSettings'
+import {Supabase} from "../lib/supabase";
 
 export default function Layout() {
-  const supabase = createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  )
 
   const [session, setSession] = useState(null)
   const [userData, setUserData] = useState(null)
@@ -19,7 +16,7 @@ export default function Layout() {
 
   useEffect(() => {
     const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
+      const { data: { session } } = await Supabase.auth.getSession()
       if (!session) {
         window.location.href = '/login'
       } else {
@@ -46,7 +43,8 @@ export default function Layout() {
   const views = {
     dashboard: <Dashboard user={userData} />,
     user: <UserSettings user={userData} />,
-    ranks: <RankMapping />
+    ranks: <RankMapping />,
+    guilds: <GuildSettings />
   }
 
   return (
