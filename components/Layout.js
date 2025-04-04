@@ -10,8 +10,10 @@ export default function Layout() {
   const supabase = createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-  )  
+  )
+
   const [session, setSession] = useState(null)
+  const [userData, setUserData] = useState(null)
   const [view, setView] = useState('dashboard')
   const [serverMessage, setServerMessage] = useState('')
 
@@ -22,6 +24,7 @@ export default function Layout() {
         window.location.href = '/login'
       } else {
         setSession(session)
+        setUserData(session.user.user_metadata)
         const res = await fetch(`${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/api/ping`, {
           headers: { Authorization: `Bearer ${session.access_token}` }
         })
@@ -35,15 +38,20 @@ export default function Layout() {
 
   if (!session) return null
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    window.location.href = '/login'
+  }
+
   const views = {
-    dashboard: <Dashboard />,
-    user: <UserSettings />,
+    dashboard: <Dashboard user={userData} />,
+    user: <UserSettings user={userData} />,
     ranks: <RankMapping />
   }
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <Sidebar setView={setView} />
+      <Sidebar setView={setView} handleLogout={handleLogout} user={userData} />
       <main className="flex-grow p-10">
         <h3 className="text-sm text-gray-500 mb-4">{serverMessage}</h3>
         {views[view]}
