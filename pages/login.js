@@ -6,15 +6,19 @@ export default function Login() {
   const router = useRouter();
 
   const login = async () => {
-    await Supabase.auth.signInWithOAuth({
-      provider: "discord",
-      options: {
-        redirectTo:
-          process.env.NEXT_PUBLIC_REDIRECT_URL ||
-          "https://asistente.artictempest.es",
-      },
-    });
+    try {
+      await Supabase.auth.signInWithOAuth({
+        provider: "discord",
+        options: {
+          redirectTo: process.env.NEXT_PUBLIC_REDIRECT_URL ?? "https://asistente.artictempest.es",
+        },
+      });
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      alert("Hubo un problema al iniciar sesión. Intenta de nuevo.");
+    }
   };
+  
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white">
