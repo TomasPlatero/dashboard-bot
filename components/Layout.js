@@ -36,7 +36,7 @@ export default function Layout() {
   if (!session) return null
 
   const handleLogout = async () => {
-    await supabase.auth.signOut()
+    await Supabase.auth.signOut()
     window.location.href = '/login'
   }
 
