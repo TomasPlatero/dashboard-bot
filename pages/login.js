@@ -10,7 +10,7 @@ export default function Login() {
       await Supabase.auth.signInWithOAuth({
         provider: "discord",
         options: {
-          redirectTo: process.env.NEXT_PUBLIC_REDIRECT_URL ?? "https://asistente.artictempest.es",
+          redirectTo: process.env.NEXT_PUBLIC_REDIRECT_URL,
         },
       });
     } catch (error) {
