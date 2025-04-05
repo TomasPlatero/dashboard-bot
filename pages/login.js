@@ -6,7 +6,14 @@ export default function Login() {
   const router = useRouter();
 
   const login = async () => {
-    await Supabase.auth.signInWithOAuth({ provider: "discord" });
+    await Supabase.auth.signInWithOAuth({
+      provider: "discord",
+      options: {
+        redirectTo:
+          process.env.NEXT_PUBLIC_REDIRECT_URL ||
+          "https://asistente.artictempest.es",
+      },
+    });
   };
 
   return (
