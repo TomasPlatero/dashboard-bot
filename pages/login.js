@@ -7,14 +7,10 @@ export default function Login() {
 
   const login = async () => {
     try {
-      const isLocalhost = typeof window !== "undefined" && window.location.hostname === "localhost";
-  
       await Supabase.auth.signInWithOAuth({
         provider: "discord",
         options: {
-          redirectTo: isLocalhost
-            ? "http://localhost:3000"
-            : "https://asistente.artictempest.es",
+          redirectTo: process.env.NEXT_PUBLIC_REDIRECT_URL,
         },
       });
     } catch (error) {
@@ -22,7 +18,7 @@ export default function Login() {
       alert("Hubo un problema al iniciar sesión. Intenta de nuevo.");
     }
   };
-
+  
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white">
       <h1 className="text-3xl font-bold mb-6">Login</h1>
