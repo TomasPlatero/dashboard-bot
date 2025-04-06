@@ -1,7 +1,38 @@
-import React from 'react';
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 export default function GuildSettings({ user }) {
-  const isBattleNetLinked = user?.battlenet_linked; // o como se llame tu campo real
+  const [guilds, setGuilds] = useState([])
+
+  useEffect(() => {
+    if (!user?.battlenet_linked) return
+
+    const fetchGuilds = async () => {
+      try {
+        const MIDDLEWARE_URL = process.env.NEXT_PUBLIC_MIDDLEWARE_URL
+
+        const res = await axios.post(
+          `${MIDDLEWARE_URL}/api/sync-guilds`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`
+            }
+          }
+        )
+
+        setGuilds(res.data.inserted)
+      } catch (err) {
+        console.error('Error sincronizando hermandades:', err)
+      }
+    }
+
+    fetchGuilds()
+  }, [user])
+
+  const handleLogin = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/auth/login?token=${user.token}`
+  }
 
   return (
     <div className="space-y-6 px-6 py-4">
@@ -11,24 +42,29 @@ export default function GuildSettings({ user }) {
         </h2>
 
         <p className="text-gray-600 text-sm mb-5">
-          {isBattleNetLinked
-            ? 'Tu cuenta de Battle.net está vinculada. Pronto podrás seleccionar la hermandad que deseas gestionar.'
-            : 'Vincula tu cuenta de Battle.net y selecciona la hermandad que deseas gestionar. Esto permitirá sincronizar rangos y miembros automáticamente.'}
+          {user?.battlenet_linked
+            ? 'Tu cuenta de Battle.net está vinculada. Selecciona la hermandad que deseas gestionar.'
+            : 'Vincula tu cuenta de Battle.net para comenzar la gestión de tu hermandad.'}
         </p>
 
-        {isBattleNetLinked ? (
-          <div className="p-4 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 text-gray-500 text-sm italic mb-6">
-            [Aquí irá el selector de hermandad vía Battle.net cuando esté disponible]
+        {user?.battlenet_linked ? (
+          <div>
+            <label className="block mb-2 text-sm font-medium text-gray-700">Selecciona tu hermandad:</label>
+            <select className="w-full p-2 border rounded">
+              {guilds.map((name, i) => (
+                <option key={i} value={name}>{name}</option>
+              ))}
+            </select>
           </div>
         ) : (
           <button
-            onClick={() => alert('Funcionalidad próximamente')}
+            onClick={handleLogin}
             className="inline-flex items-center px-5 py-2.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all shadow"
           >
-            🔗 Vincular Battle.net
+            🔗 Iniciar sesión con Battle.net
           </button>
         )}
       </div>
     </div>
-  );
+  )
 }
