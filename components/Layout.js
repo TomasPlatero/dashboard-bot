@@ -44,7 +44,7 @@ export default function Layout() {
     dashboard: <Dashboard user={userData} />,
     user: <UserSettings user={userData} />,
     ranks: <RankMapping />,
-    guilds: <GuildSettings />
+    guilds: <GuildSettings user={userData} />
   }
 
   return (
