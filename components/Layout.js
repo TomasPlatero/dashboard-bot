@@ -5,10 +5,9 @@ import Dashboard from './Dashboard'
 import UserSettings from './UserSettings'
 import RankMapping from './RankMapping'
 import GuildSettings from './GuildSettings'
-import {Supabase} from "../lib/supabase";
+import { Supabase } from '../lib/supabase'
 
 export default function Layout() {
-
   const [session, setSession] = useState(null)
   const [userData, setUserData] = useState(null)
   const [view, setView] = useState('dashboard')
@@ -21,19 +20,26 @@ export default function Layout() {
         window.location.href = '/login'
       } else {
         setSession(session)
-        setUserData(session.user.user_metadata)
+        // Incluye el token dentro del objeto user
+        setUserData({
+          ...session.user.user_metadata,
+          token: session.access_token
+        })
+
         const res = await fetch(`${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/api/ping`, {
           headers: { Authorization: `Bearer ${session.access_token}` }
         })
+
         const data = await res.json()
         if (res.ok) setServerMessage(data.message)
         else setServerMessage('Error de autenticación')
       }
     }
+
     getSession()
   }, [])
 
-  if (!session) return null
+  if (!session || !userData) return null
 
   const handleLogout = async () => {
     await Supabase.auth.signOut()

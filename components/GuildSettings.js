@@ -34,6 +34,7 @@ export default function GuildSettings({ user }) {
     window.location.href = `${process.env.NEXT_PUBLIC_MIDDLEWARE_URL}/auth/login?token=${user.token}`
   }
 
+
   return (
     <div className="space-y-6 px-6 py-4">
       <div className="bg-white shadow-md rounded-xl border border-gray-200 p-6">
